@@ -1,6 +1,6 @@
 package com.example.weatherapp.data.mapper
 
-import com.example.weatherapp.data.remote.dto.city.CountryDto
+import com.example.weatherapp.data.remote.dto.country.CountryDto
 import com.example.weatherapp.domain.model.CountryCoordinates
 
 fun CountryDto.toCountryCoordinates(): CountryCoordinates? {

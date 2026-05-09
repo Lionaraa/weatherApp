@@ -1,3 +1,5 @@
+package com.example.weatherapp.presentation
+
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
@@ -5,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.weatherapp.data.mapper.toCountryCoordinates
 import com.example.weatherapp.data.remote.api.RetrofitInstance
 import com.example.weatherapp.data.repository.WeatherRepositoryImpl
-import com.example.weatherapp.presentation.WeatherState
 import kotlinx.coroutines.launch
 
 class WeatherViewModel : ViewModel() {

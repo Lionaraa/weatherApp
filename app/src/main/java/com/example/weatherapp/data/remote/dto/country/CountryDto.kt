@@ -1,4 +1,4 @@
-package com.example.weatherapp.data.remote.dto.city
+package com.example.weatherapp.data.remote.dto.country
 
 import com.google.gson.annotations.SerializedName
 
