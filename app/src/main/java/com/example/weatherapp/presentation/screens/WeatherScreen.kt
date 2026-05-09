@@ -1,9 +1,12 @@
 package com.example.weatherapp.presentation.screens
 
+import WeatherViewModel
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -13,41 +16,54 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.weatherapp.data.remote.api.RetrofitInstance
 import com.example.weatherapp.data.repository.WeatherRepositoryImpl
 import com.example.weatherapp.domain.model.Weather
 
 @Composable
-fun WeatherScreen() {
-    val repository = remember {
-        WeatherRepositoryImpl(
-            api = RetrofitInstance.currentWeatherApi
+fun WeatherScreen(
+    viewModel: WeatherViewModel = viewModel()
+) {
+    val state = viewModel.state.value
+
+    Column {
+        OutlinedTextField(
+            value = state.countryInput,
+            onValueChange = { viewModel.onCountryInputChange(it) },
+            label = { Text("Country name") }
         )
-    }
 
-    var weather by remember { mutableStateOf<Weather?>(null) }
+        Button(
+            onClick = {
+                viewModel.searchWeatherByCountry()
+            }
+        ) {
+            Text("Search")
+        }
 
-    LaunchedEffect(Unit) {
-        weather = repository.getCurrentWeather(
-            latitude = 52.52,
-            longitude = 13.41
-        )
-    }
+        if (state.isLoading) {
+            Text("Loading...")
+        }
 
-    Column(
-        modifier = Modifier.padding(16.dp)
-    ) {
-        Text(text = "Weather App")
+        if (state.error != null) {
+            Text("Error: ${state.error}")
+        }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        if (state.countryName != null) {
+            Text("Country: ${state.countryName}")
+        }
 
-        if (weather == null) {
-            Text(text = "Loading...")
-        } else {
-            Text(text = "Temperature: ${weather!!.temperature} ${weather!!.temperatureUnit}")
-            Text(text = "Rain: ${weather!!.rain} ${weather!!.rainUnit}")
-            Text(text = "Wind speed: ${weather!!.windSpeed} ${weather!!.windSpeedUnit}")
-            Text(text = "Wind direction: ${weather!!.windDirection} ${weather!!.windDirectionUnit}")
+        if (state.latitude != null && state.longitude != null) {
+            Text("Latitude: ${state.latitude}")
+            Text("Longitude: ${state.longitude}")
+        }
+
+        if (state.weather != null) {
+            Text("Temperature: ${state.weather.temperature} ${state.weather.temperatureUnit}")
+            Text("Rain: ${state.weather.rain} ${state.weather.rainUnit}")
+            Text("Wind speed: ${state.weather.windSpeed} ${state.weather.windSpeedUnit}")
+            Text("Wind direction: ${state.weather.windDirection} ${state.weather.windDirectionUnit}")
         }
     }
 }

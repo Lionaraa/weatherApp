@@ -1,29 +1,29 @@
-package com.example.weatherapp.data.remote.dto
+package com.example.weatherapp.data.remote.dto.weather
 
 import com.google.gson.annotations.SerializedName
 
-data class CurrentUnits(
+data class Current(
     @SerializedName("interval")
-    val interval: String,
+    val interval: Int,
 
     @SerializedName("precipitation")
-    val precipitation: String,
+    val precipitation: Double,
 
     @SerializedName("rain")
-    val rain: String,
+    val rain: Double,
 
     @SerializedName("relative_humidity_2m")
-    val relativeHumidity: String,
+    val relativeHumidity: Int,
 
     @SerializedName("temperature_2m")
-    val temperature: String,
+    val temperature: Double,
 
     @SerializedName("time")
     val time: String,
 
     @SerializedName("wind_direction_10m")
-    val windDirection: String,
+    val windDirection: Int,
 
     @SerializedName("wind_speed_10m")
-    val windSpeed: String
+    val windSpeed: Double
 )

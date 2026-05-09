@@ -4,8 +4,8 @@ import com.example.weatherapp.domain.model.Weather
 
 interface WeatherRepository {
     suspend fun getCurrentWeather(
-        latitude: Double,
-        longitude: Double
+        latitude: Double?,
+        longitude: Double?
     ): Weather
 
 }

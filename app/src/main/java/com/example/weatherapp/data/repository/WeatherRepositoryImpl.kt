@@ -10,8 +10,8 @@ class WeatherRepositoryImpl(
 ) : WeatherRepository {
 
     override suspend fun getCurrentWeather(
-        latitude: Double,
-        longitude: Double
+        latitude: Double?,
+        longitude: Double?
     ): Weather {
         val response = api.getWeather(
             latitude = latitude,
