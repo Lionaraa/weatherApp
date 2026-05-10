@@ -1,30 +1,48 @@
 package com.example.weatherapp.presentation.screens
 
+import android.graphics.Color
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import com.example.weatherapp.presentation.WeatherViewModel
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
+@Preview
 @Composable
 fun WeatherScreen(
     viewModel: WeatherViewModel = viewModel()
 ) {
     val state = viewModel.state.value
 
-    Column {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
         OutlinedTextField(
-            value = state.countryInput,
-            onValueChange = { viewModel.onCountryInputChange(it) },
-            label = { Text("Country name") }
+            value = state.cityInput,
+            onValueChange = { viewModel.onCityInputChange(it) },
+            label = { Text("Country name") },
+
+
         )
 
         Button(
             onClick = {
                 viewModel.searchWeatherByCountry()
-            }
+            },
+
         ) {
             Text("Search")
         }
@@ -37,8 +55,8 @@ fun WeatherScreen(
             Text("Error: ${state.error}")
         }
 
-        if (state.countryName != null) {
-            Text("Country: ${state.countryName}")
+        if (state.cityName != null) {
+            Text("Country: ${state.cityName}")
         }
 
         if (state.latitude != null && state.longitude != null) {
@@ -51,6 +69,7 @@ fun WeatherScreen(
             Text("Rain: ${state.weather.rain} ${state.weather.rainUnit}")
             Text("Wind speed: ${state.weather.windSpeed} ${state.weather.windSpeedUnit}")
             Text("Wind direction: ${state.weather.windDirection} ${state.weather.windDirectionUnit}")
+
         }
     }
 }

@@ -4,9 +4,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weatherapp.data.mapper.toCountryCoordinates
+import com.example.weatherapp.data.mapper.toCityCoordinates
 import com.example.weatherapp.data.remote.api.RetrofitInstance
 import com.example.weatherapp.data.repository.WeatherRepositoryImpl
+import com.example.weatherapp.domain.model.CityCoordinates
 import kotlinx.coroutines.launch
 
 class WeatherViewModel : ViewModel() {
@@ -16,66 +17,64 @@ class WeatherViewModel : ViewModel() {
     private val _state = mutableStateOf(WeatherState())
     val state: State<WeatherState> = _state
 
-    fun onCountryInputChange(newValue: String) {
+    fun onCityInputChange(newValue: String) {
         _state.value = _state.value.copy(
-            countryInput = newValue
+            cityInput = newValue
         )
     }
 
     fun searchWeatherByCountry() {
-        val countryName = _state.value.countryInput.trim()
+        val cityName = _state.value.cityInput.trim()
 
-        if (countryName.isBlank()) {
+        if (cityName.isBlank()) {
             _state.value = _state.value.copy(
                 error = "Write country name first"
             )
             return
         }
 
-        getWeather(countryName)
+        getWeather(cityName)
     }
 
 
-    private fun getWeather(countryName: String) {
+    private fun getWeather(cityName: String) {
         viewModelScope.launch {
             _state.value = WeatherState(
-                countryInput = countryName,
+                cityInput = cityName,
                 isLoading = true
             )
 
             try {
-                val countries = RetrofitInstance.countriesApi.getCountryByName(
-                    countryName = countryName
+                val city = RetrofitInstance.citiesApi.getCity(
+                    cityName = cityName
                 )
 
-                val countryCoordinates = countries
-                    .firstOrNull()
-                    ?.toCountryCoordinates()
+                val cityCoordinates = city.toCityCoordinates()
 
-                if (countryCoordinates == null) {
+                if (cityCoordinates == null) {
                     _state.value = WeatherState(
-                        countryInput = countryName,
+                        cityInput = cityName,
                         error = "Country not found"
                     )
                     return@launch
                 }
 
                 val weather = weatherRepository.getCurrentWeather(
-                    latitude = countryCoordinates.latitude,
-                    longitude = countryCoordinates.longitude
+                    latitude = cityCoordinates.latitude,
+                    longitude = cityCoordinates.longitude
                 )
 
                 _state.value = WeatherState(
-                    countryInput = countryName,
-                    countryName = countryCoordinates.countryName,
-                    latitude = countryCoordinates.latitude,
-                    longitude = countryCoordinates.longitude,
+                    cityInput = cityName,
+                    cityName = cityCoordinates.cityName,
+                    latitude = cityCoordinates.latitude,
+                    longitude = cityCoordinates.longitude,
                     weather = weather
                 )
 
             } catch (e: Exception) {
                 _state.value = WeatherState(
-                    countryInput = countryName,
+                    cityInput = cityName,
                     error = e.message ?: "Unexpected error occurred"
                 )
             }
